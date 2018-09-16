@@ -27,7 +27,35 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         trees()
         spruces()
         addRotateUFO()
+        addRoofLights()
         
+    }
+    
+    func lightNode(position: SCNVector3) -> SCNNode {
+        let light = SCNLight()
+        light.type = .omni
+        light.color = UIColor(red:1.00, green:0.99, blue:0.71, alpha:1.00)
+        light.castsShadow = true
+        light.intensity = 0.05
+        light.attenuationStartDistance = 0
+        light.attenuationEndDistance = 0.5
+        
+        let lightNode = SCNNode(geometry: SCNSphere(radius: 0.02))
+        lightNode.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
+        lightNode.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.physicallyBased
+        lightNode.light = light
+        lightNode.position = position
+
+        return lightNode
+    }
+    
+    func addRoofLights() {
+        let step: Float = 3.8
+        let startPosition: Float = -3.8
+        for x in 0..<5 {
+            mainNode().addChildNode(lightNode(position: SCNVector3(x: (startPosition + Float(x) * step), y: 5.03, z: -1.2)))
+            mainNode().addChildNode(lightNode(position: SCNVector3(x: (startPosition + Float(x) * step), y: 5.03, z: -2.8)))
+        }
     }
     
     func addRotateUFO() {
@@ -45,10 +73,24 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         ufo?.addAnimation(spin, forKey: "spin around")
       
         let ufoNode = SCNNode()
-        ufoNode.position = SCNVector3(0, 6, 2)
+        ufoNode.position = SCNVector3(0, 6, 3)
         ufoNode.eulerAngles = SCNVector3(Float.pi/2/3, Float.pi/2/3, 0)
         ufoNode.addChildNode(ufo!)
         mainNode().addChildNode(ufoNode)
+        
+        let light = SCNLight()
+        light.type = .omni
+        light.color = UIColor.yellow
+        light.castsShadow = true
+        light.intensity = 3
+        
+        light.attenuationStartDistance = 0
+        light.attenuationEndDistance = 2
+        
+        let lightNode = SCNNode()
+        lightNode.light = light
+        lightNode.position = SCNVector3(x: 0, y: 7.5, z: 3)
+        mainNode().addChildNode(lightNode)
     }
     
     func loadYard()  {
@@ -71,9 +113,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     
     
-    func getTree(positin: SCNVector3) -> SCNNode {
+    func getTree(position: SCNVector3) -> SCNNode {
         let nodeTree = SCNNode()
-        nodeTree.position = positin
+        nodeTree.position = position
         
         let nodeTrunk = SCNNode()
         nodeTrunk.position = SCNVector3(0, 0.75, 0)
@@ -100,25 +142,25 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func trees() {
         let mainNode = self.mainNode()
         
-        mainNode.addChildNode(getTree(positin: SCNVector3(-4.5, 0, 4.5)))
-        mainNode.addChildNode(getTree(positin: SCNVector3(-4.5, 0, -4.5)))
-        mainNode.addChildNode(getTree(positin: SCNVector3(4.5, 0, -4.5)))
-        mainNode.addChildNode(getTree(positin: SCNVector3(4.5, 0, 4.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(-4.5, 0, 4.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(-4.5, 0, -4.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(4.5, 0, -4.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(4.5, 0, 4.5)))
         
-        mainNode.addChildNode(getTree(positin: SCNVector3(-4.5, 0, -1.5)))
-        mainNode.addChildNode(getTree(positin: SCNVector3(-4.5, 0, 1.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(-4.5, 0, -1.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(-4.5, 0, 1.5)))
 
-        mainNode.addChildNode(getTree(positin: SCNVector3(4.5, 0, -1.5)))
-        mainNode.addChildNode(getTree(positin: SCNVector3(4.5, 0, 1.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(4.5, 0, -1.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(4.5, 0, 1.5)))
 
-        mainNode.addChildNode(getTree(positin: SCNVector3(-1.5, 0, -4.5)))
-        mainNode.addChildNode(getTree(positin: SCNVector3(1.5, 0, -4.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(-1.5, 0, -4.5)))
+        mainNode.addChildNode(getTree(position: SCNVector3(1.5, 0, -4.5)))
 
     }
     
-    func getSpruce(positin: SCNVector3)  -> SCNNode {
+    func getSpruce(position: SCNVector3)  -> SCNNode {
         let nodeSpruce = SCNNode()
-        nodeSpruce.position = positin
+        nodeSpruce.position = position
 
         let nodeTrunk = SCNNode()
         nodeTrunk.position = SCNVector3(0, 1, 0)
@@ -164,8 +206,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let mainNode = self.mainNode()
         
         for index in  [-0.5,2,4.5] {
-            mainNode.addChildNode(getSpruce(positin: SCNVector3(1, 0, index)))
-            mainNode.addChildNode(getSpruce(positin: SCNVector3(-1, 0, index)))
+            mainNode.addChildNode(getSpruce(position: SCNVector3(1, 0, index)))
+            mainNode.addChildNode(getSpruce(position: SCNVector3(-1, 0, index)))
         }
     }
     

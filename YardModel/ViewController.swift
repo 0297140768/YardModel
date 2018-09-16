@@ -25,6 +25,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         loadYard()
         trees()
+        spruces()
         
     }
     
@@ -46,6 +47,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return SCNNode()
     }
     
+    
+    
     func getTree(positin: SCNVector3) -> SCNNode {
         let nodeTree = SCNNode()
         nodeTree.position = positin
@@ -53,7 +56,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let nodeTrunk = SCNNode()
         nodeTrunk.position = SCNVector3(0, 0.75, 0)
         let trunk = SCNCylinder(radius: 0.05, height: 1.5)
-        trunk.firstMaterial?.diffuse.contents = UIColor.brown
         trunk.firstMaterial?.diffuse.contents = UIImage(named: "art.scnassets/trunk1.jpg")
         trunk.firstMaterial?.lightingModel = SCNMaterial.LightingModel.physicallyBased
 
@@ -90,6 +92,59 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         mainNode.addChildNode(getTree(positin: SCNVector3(-1.5, 0, -4.5)))
         mainNode.addChildNode(getTree(positin: SCNVector3(1.5, 0, -4.5)))
 
+    }
+    
+    func getSpruce(positin: SCNVector3)  -> SCNNode {
+        let nodeSpruce = SCNNode()
+        nodeSpruce.position = positin
+
+        let nodeTrunk = SCNNode()
+        nodeTrunk.position = SCNVector3(0, 1, 0)
+        let trunk = SCNCylinder(radius: 0.15, height: 2)
+        trunk.firstMaterial?.diffuse.contents = UIImage(named: "art.scnassets/trunk1.jpg")
+        
+        nodeTrunk.geometry = trunk
+        
+        let nodeLowerCone = SCNNode()
+        nodeLowerCone.position = SCNVector3(0, 1, 0)
+        var cone = SCNCone(topRadius: 0, bottomRadius: 1, height: 1.5)
+        cone.firstMaterial?.diffuse.contents = UIImage(named: "art.scnassets/spruce1.jpeg")
+        cone.firstMaterial?.lightingModel = SCNMaterial.LightingModel.physicallyBased
+        nodeLowerCone.geometry = cone
+        
+        
+        let nodeMiddleCone = SCNNode()
+        nodeMiddleCone.position = SCNVector3(0, 1.8, 0)
+        cone = SCNCone(topRadius: 0, bottomRadius: 0.8, height: 1.5)
+        cone.firstMaterial?.diffuse.contents = UIImage(named: "art.scnassets/spruce1.jpeg")
+        cone.firstMaterial?.lightingModel = SCNMaterial.LightingModel.physicallyBased
+        nodeMiddleCone.geometry = cone
+
+        let nodeUpperCone = SCNNode()
+        nodeUpperCone.position = SCNVector3(0, 2.4, 0)
+        cone = SCNCone(topRadius: 0, bottomRadius: 0.55, height: 1)
+        cone.firstMaterial?.diffuse.contents = UIImage(named: "art.scnassets/spruce1.jpeg")
+        cone.firstMaterial?.lightingModel = SCNMaterial.LightingModel.physicallyBased
+        nodeUpperCone.geometry = cone
+
+        nodeSpruce.addChildNode(nodeTrunk)
+        nodeSpruce.addChildNode(nodeLowerCone)
+        nodeSpruce.addChildNode(nodeMiddleCone)
+        nodeSpruce.addChildNode(nodeUpperCone)
+
+        nodeSpruce.scale = SCNVector3(0.4, 0.5, 0.4)
+        
+        return nodeSpruce
+        
+    }
+    
+    func spruces()  {
+        let mainNode = self.mainNode()
+        
+        for index in  [-0.5,2,4.5] {
+            mainNode.addChildNode(getSpruce(positin: SCNVector3(1, 0, index)))
+            mainNode.addChildNode(getSpruce(positin: SCNVector3(-1, 0, index)))
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

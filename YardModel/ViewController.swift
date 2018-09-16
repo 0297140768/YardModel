@@ -26,21 +26,29 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         loadYard()
         trees()
         spruces()
-        rotateUFO()
+        addRotateUFO()
         
     }
     
-    func rotateUFO() {
-        let ufo = mainNode().childNode(withName: "ufo", recursively: false)
+    func addRotateUFO() {
+        let ufoScene = SCNScene(named: "art.scnassets/UFO.scn")!
         
+        let ufo = ufoScene.rootNode.childNode(withName: "ufo", recursively: false)
+        ufo?.scale = SCNVector3(x: 0.3, y: 0.3, z: 0.3)
         ufo?.pivot = SCNMatrix4MakeTranslation(0, 1.5, 4)
+        
         let spin = CABasicAnimation(keyPath: "rotation")
         spin.fromValue = NSValue(scnVector4: SCNVector4(x: 0, y: 1, z: 0, w: 0))
         spin.toValue = NSValue(scnVector4: SCNVector4(x: 0, y: 1, z: 0, w: 2 * Float.pi))
         spin.duration = 3
         spin.repeatCount = .infinity
         ufo?.addAnimation(spin, forKey: "spin around")
-        
+      
+        let ufoNode = SCNNode()
+        ufoNode.position = SCNVector3(0, 6, 2)
+        ufoNode.eulerAngles = SCNVector3(Float.pi/2/3, Float.pi/2/3, 0)
+        ufoNode.addChildNode(ufo!)
+        mainNode().addChildNode(ufoNode)
     }
     
     func loadYard()  {

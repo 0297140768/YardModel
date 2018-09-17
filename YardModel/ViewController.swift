@@ -28,6 +28,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         spruces()
         addRotateUFO()
         addRoofLights()
+        addCat()
+        addGroundCat()
         
     }
     
@@ -133,6 +135,55 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         return SCNNode()
     }
+    
+    func addCat() {
+        let catScene = SCNScene(named: "art.scnassets/cat.scn")!
+        
+        let cat = catScene.rootNode.childNode(withName: "cat", recursively: false)
+        cat?.scale = SCNVector3(x: 0.008, y: 0.008, z: 0.008)
+        
+        let spin = CABasicAnimation(keyPath: "rotation")
+        spin.fromValue = NSValue(scnVector4: SCNVector4(x: 0, y: 1, z: 0, w: 0))
+        spin.toValue = NSValue(scnVector4: SCNVector4(x: 0, y: 1, z: 0, w: 2 * Float.pi))
+        spin.duration = 3
+        spin.repeatCount = .infinity
+        cat?.position = SCNVector3(0.5, 0.01, 3)
+        cat?.eulerAngles = SCNVector3(0, Float.pi, 0)
+        cat?.pivot = SCNMatrix4MakeRotation(Float.pi/2/2, 0, 0, 1)
+        cat?.addAnimation(spin, forKey: "spin around")
+        mainNode().addChildNode(cat!)
+    }
+    
+    func addGroundCat() {
+        let catScene = SCNScene(named: "art.scnassets/cat.scn")!
+        
+        let cat = catScene.rootNode.childNode(withName: "cat", recursively: false)
+        cat?.scale = SCNVector3(x: 0.008, y: 0.008, z: 0.008)
+        cat?.position = SCNVector3(4.5, 0.01, 3)
+        cat?.eulerAngles = SCNVector3(0, Float.pi, 0)
+        cat?.name = "groundCat"
+        
+        mainNode().addChildNode(cat!)
+    }
+
+    func moveCatUp() {
+        let catNode = mainNode().childNode(withName: "cat", recursively: false)
+        let move = CABasicAnimation(keyPath: "position.y")
+        move.byValue = Float(5.8)
+        move.duration = 10
+        move.repeatCount = .infinity
+        catNode?.addAnimation(move, forKey: "move cat up")
+    }
+    
+    func moveCatToRay() {
+        let catNode = mainNode().childNode(withName: "groundCat", recursively: false)
+        let move = CABasicAnimation(keyPath: "position.x")
+        move.byValue = Float(-4)
+        move.duration = 10
+        move.repeatCount = .infinity
+        catNode?.addAnimation(move, forKey: "move cat to ray")
+    }
+    
     
     
     
@@ -249,6 +300,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Pause the view's session
         sceneView.session.pause()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        moveCatUp()
+        moveCatToRay()
     }
 
     // MARK: - ARSCNViewDelegate

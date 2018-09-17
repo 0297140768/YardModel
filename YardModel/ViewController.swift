@@ -73,7 +73,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         ufo?.addAnimation(spin, forKey: "spin around")
       
         let ufoNode = SCNNode()
-        ufoNode.position = SCNVector3(0, 6, 3)
+        ufoNode.position = SCNVector3(0.5, 6, 3)
         ufoNode.eulerAngles = SCNVector3(Float.pi/2/3, Float.pi/2/3, 0)
         ufoNode.addChildNode(ufo!)
         mainNode().addChildNode(ufoNode)
@@ -91,6 +91,29 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         lightNode.light = light
         lightNode.position = SCNVector3(x: 0, y: 7.5, z: 3)
         mainNode().addChildNode(lightNode)
+        
+        let lightRay = SCNLight()
+        lightRay.type = .spot
+        lightRay.color = UIColor(red:1.00, green:0.98, blue:0.59, alpha:1.00)
+        lightRay.castsShadow = true
+        lightRay.spotInnerAngle = 8
+        lightRay.spotOuterAngle = 8
+        lightRay.intensity = 1
+        let lightRayNode = SCNNode()
+        lightRayNode.light = lightRay
+        lightRayNode.opacity = 0.5
+        lightRayNode.position = SCNVector3(0.5, 5.9, 3)
+        lightRayNode.eulerAngles = SCNVector3(-Float.pi/2, 0, 0)
+        mainNode().addChildNode(lightRayNode)
+        
+        let rayConeNode = SCNNode(geometry: SCNCone(topRadius: 0.2, bottomRadius: 0.4, height: 6))
+        rayConeNode.geometry?.firstMaterial?.diffuse.contents = UIColor(red:1.00, green:0.98, blue:0.59, alpha:1.00)
+        rayConeNode.geometry?.firstMaterial?.lightingModel = SCNMaterial.LightingModel.physicallyBased
+        rayConeNode.opacity = 0.2
+        rayConeNode.position = SCNVector3(0.5, 3, 3)
+        mainNode().addChildNode(rayConeNode)
+        
+        
     }
     
     func loadYard()  {
